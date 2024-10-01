@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   database:
-    build: ./database
+    build:
+      context: ./database
+      dockerfile: Dockerfile
     ports:
       - "5432:5432"
     environment:
@@ -13,7 +15,9 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
