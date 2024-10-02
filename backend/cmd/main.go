@@ -1,18 +1,19 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+	"time"
+
+	"github.com/sammig6i/sydneys-sourdough-co/bootstrap"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Welcome to Sydney's Sourdough Company!")
-	})
+	app := bootstrap.App()
 
-	log.Println("Starting server on :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatal(err)
-	}
+	env := app.Env
+
+	db := app.Postgres
+	defer app.CloseDBConnection()
+
+	timeout := time.Duration(env.ContextTimeout) * time.Second
+
 }

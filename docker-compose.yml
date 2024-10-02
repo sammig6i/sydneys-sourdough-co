@@ -10,6 +10,20 @@ services:
     depends_on:
       - database
 
+  database:
+    build:
+      context: ./backend/database
+      dockerfile: Dockerfile
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    env_file: .env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   frontend:
     build:
       context: ./frontend
@@ -29,20 +43,6 @@ services:
     env_file: .env
     depends_on:
       - backend
-
-  database:
-    build:
-      context: ./database
-      dockerfile: Dockerfile
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
-    env_file: .env
-    environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:
