@@ -7,7 +7,6 @@ import (
 )
 
 type Env struct {
-	AppEnv         string `mapstructure:"APP_ENV"`
 	ContextTimeout int    `mapstructure:"CONTEXT_TIMEOUT"`
 	DBHost         string `mapstructure:"DB_HOST"`
 	DBPort         string `mapstructure:"DB_PORT"`
@@ -29,10 +28,6 @@ func NewEnv() *Env {
 	err = viper.Unmarshal(&env)
 	if err != nil {
 		log.Fatalf("Unable to decode into struct: %v", err)
-	}
-
-	if env.AppEnv == "development" {
-		log.Println("Running in development mode")
 	}
 
 	return &env
