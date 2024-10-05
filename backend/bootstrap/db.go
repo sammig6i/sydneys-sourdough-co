@@ -18,11 +18,14 @@ func NewPostgresDB(env *Env) database.Database {
 	dbUser := env.DBUser
 	dbPass := env.DBPass
 	dbName := env.DBName
-
-	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", dbUser, dbPass, dbHost, dbPort, dbName)
+	connString := env.DatabaseURL
 
 	if dbUser == "" && dbPass == "" {
 		connString = fmt.Sprintf("postgres://%s:%s/%s", dbHost, dbPort, dbName)
+	}
+
+	if err := database.RunMigrations(connString, "./migrations"); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
 	}
 
 	conn, err := database.NewPostgresDatabase(ctx, connString)
