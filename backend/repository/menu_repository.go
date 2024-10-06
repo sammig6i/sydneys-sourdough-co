@@ -17,8 +17,14 @@ func NewMenuItemRepository(db database.Database) domain.MenuItemRepository {
 
 func (m *menuItemRepository) Create(c context.Context, menuItem *domain.MenuItem) error {
 	_, err := m.db.Exec(c, `
-				INSERT INTO menu_items (name, description, price, category)
-	`)
+		INSERT INTO menu_items (
+			name, description, price, category_id, image_url
+		) VALUES (
+			$1, $2, $3, $4, $5
+		)
+	`, menuItem.Name, menuItem.Description, menuItem.Price, menuItem.CategoryID, menuItem.ImageURL)
+
+	return err
 }
 
 func (m *menuItemRepository) Fetch(c context.Context) ([]*domain.MenuItem, error)
