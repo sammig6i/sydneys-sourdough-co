@@ -17,6 +17,7 @@ CREATE TABLE menu_items (
   image_url VARCHAR(255),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  embedding vector(384),
   FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 

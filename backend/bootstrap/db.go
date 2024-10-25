@@ -28,7 +28,6 @@ func NewPostgresDB(env *Env) database.Database {
 	}
 
 	return conn
-
 }
 
 func ClosePostgresDBConnection(db database.Database) {

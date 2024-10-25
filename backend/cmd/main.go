@@ -16,4 +16,6 @@ func main() {
 
 	timeout := time.Duration(env.ContextTimeout) * time.Second
 
+	// TODO Update with API endpoints
+
 }
