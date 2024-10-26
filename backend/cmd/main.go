@@ -16,6 +16,6 @@ func main() {
 
 	timeout := time.Duration(env.ContextTimeout) * time.Second
 
-	// TODO Update with API endpoints
+	// TODO Update with API endpoints (routes), controllers, and middleware (if necessary)
 
 }

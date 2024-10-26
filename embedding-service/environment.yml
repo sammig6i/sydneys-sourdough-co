@@ -1,0 +1,14 @@
+name: embedding-service
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - fastapi==0.115.3
+      - uvicorn==0.32.0
+      - torch==2.2.2
+      - transformers==4.46.0
+      - numpy>=2.1.2
+      - pydantic==2.9.2
