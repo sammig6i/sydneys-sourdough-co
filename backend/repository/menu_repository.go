@@ -79,6 +79,8 @@ func (m *menuItemRepository) Update(c context.Context, menuItem *domain.MenuItem
 	argCount := 1
 	updatesMade := false
 
+	needsEmbeddingUpdate := menuItem.Name != "" || menuItem.Description != ""
+
 	if menuItem.Name != "" {
 		query += fmt.Sprintf("name = $%d, ", argCount)
 		args = append(args, menuItem.Name)
@@ -91,6 +93,29 @@ func (m *menuItemRepository) Update(c context.Context, menuItem *domain.MenuItem
 		argCount++
 		updatesMade = true
 	}
+
+	if needsEmbeddingUpdate {
+		currentItem, err := m.GetByID(c, menuItem.ID)
+		if err != nil {
+			return fmt.Errorf("error getting current menu item: %w", err)
+		}
+
+		searchText := menuItem.Name
+		if searchText == "" {
+			searchText = currentItem.Name
+		}
+		if menuItem.Description != "" {
+			searchText += " " + menuItem.Description
+		} else if currentItem.Description != "" {
+			searchText += " " + currentItem.Description
+		}
+
+		query += fmt.Sprintf("embedding = $%d, ", argCount)
+		args = append(args, pgvector.NewVector(getEmbedding(searchText)))
+		argCount++
+		updatesMade = true
+	}
+
 	if menuItem.Price != 0 {
 		query += fmt.Sprintf("price = $%d, ", argCount)
 		args = append(args, menuItem.Price)
@@ -132,13 +157,19 @@ func (m *menuItemRepository) Update(c context.Context, menuItem *domain.MenuItem
 }
 
 func (m *menuItemRepository) Delete(c context.Context, id int) error {
-	_, err := m.db.Exec(c, `
+	result, err := m.db.Exec(c, `
 		DELETE FROM menu_items
 		WHERE id = $1
 	`, id)
 	if err != nil {
 		return fmt.Errorf("error deleting menu item: %w", err)
 	}
+
+	rowsAffected := result.RowsAffected()
+	if rowsAffected == 0 {
+		return fmt.Errorf("menu item with id %d not found", id)
+	}
+
 	return nil
 }
 

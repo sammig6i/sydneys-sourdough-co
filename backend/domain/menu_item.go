@@ -5,11 +5,6 @@ import (
 	"time"
 )
 
-type Category struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
-
 type MenuItem struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
@@ -23,15 +18,6 @@ type MenuItem struct {
 	Embedding   []float32 `json:"-"`
 }
 
-type CategoryRepository interface {
-	Create(c context.Context, category *Category) error
-	Fetch(c context.Context) ([]*Category, error)
-	Update(c context.Context, category *Category) error
-	Delete(c context.Context, id int) error
-	GetByID(c context.Context, id int) (*Category, error)
-	GetByName(c context.Context, name string) (*Category, error)
-}
-
 type MenuItemRepository interface {
 	Create(c context.Context, menuItem *MenuItem) error
 	Fetch(c context.Context) ([]*MenuItem, error)
@@ -40,16 +26,6 @@ type MenuItemRepository interface {
 	GetByID(c context.Context, id int) (*MenuItem, error)
 	GetByCategory(c context.Context, categoryID int) ([]*MenuItem, error)
 	GetByPriceRange(c context.Context, minPrice, maxPrice float64) ([]*MenuItem, error)
-	Search(c context.Context, query string) ([]*MenuItem, error)
-}
-
-type CategoryUsecase interface {
-	Create(c context.Context, category *Category) error
-	Fetch(c context.Context) ([]*Category, error)
-	Update(c context.Context, category *Category) error
-	Delete(c context.Context, id int) error
-	GetByID(c context.Context, id int) (*Category, error)
-	GetByName(c context.Context, name string) (*Category, error)
 }
 
 type MenuItemUsecase interface {
@@ -61,7 +37,6 @@ type MenuItemUsecase interface {
 	GetByCategory(c context.Context, categoryID int) ([]*MenuItem, error)
 	GetByName(c context.Context, name string) (*MenuItem, error)
 	GetByPriceRange(c context.Context, minPrice, maxPrice float64) ([]*MenuItem, error)
-	Search(c context.Context, query string) ([]*MenuItem, error)
 }
 
 /*
