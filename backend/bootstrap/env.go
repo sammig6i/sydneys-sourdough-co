@@ -19,18 +19,24 @@ type Env struct {
 
 func NewEnv() *Env {
 	env := Env{}
-	viper.SetConfigFile("../../.env")
 
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalf("Error reading config file: %v", err)
+	viper.AutomaticEnv()
+
+	viper.SetConfigName(".env")
+	viper.SetConfigType("env")
+
+	viper.AddConfigPath("/app")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("..")
+	viper.AddConfigPath("../..")
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Printf("Warning: Error reading config file: %v", err)
 	}
 
-	err = viper.Unmarshal(&env)
-	if err != nil {
+	if err := viper.Unmarshal(&env); err != nil {
 		log.Fatalf("Unable to decode into struct: %v", err)
 	}
 
 	return &env
-
 }

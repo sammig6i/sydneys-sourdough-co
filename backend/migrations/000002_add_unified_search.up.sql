@@ -1,4 +1,4 @@
-CREATE VIEW IF NOT EXISTS unified_search AS
+CREATE VIEW unified_search AS
 SELECT 
     'menu_item' as entity_type,
     id,

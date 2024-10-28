@@ -2,8 +2,8 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     env_file: .env
@@ -52,7 +52,8 @@ services:
       context: ./embedding-service
       dockerfile: Dockerfile
     ports:
-      - "${EMBEDDING_SERVICE_PORT}:8000"
+      - "8000:8000"
+    env_file: .env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
       interval: 30s

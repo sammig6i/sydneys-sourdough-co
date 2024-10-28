@@ -22,3 +22,7 @@ func App() Application {
 func (app *Application) CloseDBConnection() {
 	ClosePostgresDBConnection(app.Postgres)
 }
+
+func (app *Application) RunDownMigrations() error {
+	return database.RunDownMigrations(app.Env.DatabaseURL, "/app/migrations")
+}

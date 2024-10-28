@@ -3,8 +3,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 CREATE TABLE categories (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) UNIQUE NOT NULL,
-  embedding vector(384),
-
+  embedding vector(384)
 );
 
 CREATE TABLE menu_items (

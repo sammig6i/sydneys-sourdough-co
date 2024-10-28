@@ -1,5 +1,3 @@
-# TODO Add fastapi endpoints
-
 from typing import List
 
 from fastapi import FastAPI

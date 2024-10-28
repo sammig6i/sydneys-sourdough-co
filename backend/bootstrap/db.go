@@ -14,7 +14,9 @@ func NewPostgresDB(env *Env) database.Database {
 
 	connString := env.DatabaseURL
 
-	if err := database.RunMigrations(connString, "./migrations"); err != nil {
+	log.Printf("Database URL: %s", connString)
+
+	if err := database.RunMigrations(connString, "/app/migrations"); err != nil {
 		log.Fatalf("Failed to run migrations: %v", err)
 	}
 

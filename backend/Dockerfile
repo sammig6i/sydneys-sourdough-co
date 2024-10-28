@@ -2,13 +2,14 @@ FROM golang:1.22
 
 WORKDIR /app
 
-COPY go.mod .
-RUN go mod download || true
+COPY backend/go.mod backend/go.sum ./
+RUN go mod download
 
-COPY . .
+COPY backend/ .
+COPY .env .
 
 RUN go build -o main ./cmd/main.go
 
-EXPOSE 8080
+EXPOSE ${BACKEND_PORT}
 
 CMD ["./main"]
