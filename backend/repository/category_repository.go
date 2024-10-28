@@ -21,11 +21,15 @@ func NewCategoryRepository(db database.Database) domain.CategoryRepository {
 
 func (c *categoryRepository) Create(ctx context.Context, category *domain.Category) error {
 	searchText := category.Name
-	_, err := c.db.Exec(ctx, `
+	embedding, err := getEmbedding(searchText)
+	if err != nil {
+		return err
+	}
+	_, err = c.db.Exec(ctx, `
 		INSERT INTO categories (name, embedding) 
 		VALUES ($1, $2)
 		RETURNING id
-	`, category.Name, pgvector.NewVector(getEmbedding(searchText)))
+	`, category.Name, pgvector.NewVector(embedding))
 
 	if err != nil {
 		return fmt.Errorf("error creating category: %w", err)
@@ -76,8 +80,13 @@ func (c *categoryRepository) Update(ctx context.Context, category *domain.Catego
 		argCount++
 		updatesMade = true
 
+		embedding, err := getEmbedding(category.Name)
+		if err != nil {
+			return err
+		}
+
 		query += fmt.Sprintf("embedding = $%d, ", argCount)
-		args = append(args, pgvector.NewVector(getEmbedding(category.Name)))
+		args = append(args, pgvector.NewVector(embedding))
 		argCount++
 	}
 

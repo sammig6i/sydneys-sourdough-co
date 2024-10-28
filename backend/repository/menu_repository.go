@@ -22,11 +22,16 @@ func NewMenuItemRepository(db database.Database) domain.MenuItemRepository {
 
 func (m *menuItemRepository) Create(ctx context.Context, menuItem *domain.MenuItem) error {
 	searchText := menuItem.Name
+	embedding, err := getEmbedding(searchText)
+	if err != nil {
+		return err
+	}
+
 	if menuItem.Description != "" {
 		searchText += " " + menuItem.Description
 	}
 
-	_, err := m.db.Exec(ctx, `
+	_, err = m.db.Exec(ctx, `
 		INSERT INTO menu_items (
 			name, description, price, category_id, 
 			image_url, embedding, created_at, updated_at
@@ -36,7 +41,7 @@ func (m *menuItemRepository) Create(ctx context.Context, menuItem *domain.MenuIt
 		RETURNING id
 	`, menuItem.Name, menuItem.Description, menuItem.Price,
 		menuItem.CategoryID, menuItem.ImageURL,
-		pgvector.NewVector(getEmbedding(searchText)))
+		pgvector.NewVector(embedding))
 
 	if err != nil {
 		return fmt.Errorf("error creating menu item: %w", err)
@@ -111,8 +116,12 @@ func (m *menuItemRepository) Update(ctx context.Context, menuItem *domain.MenuIt
 			searchText += " " + currentItem.Description
 		}
 
+		embedding, err := getEmbedding(searchText)
+		if err != nil {
+			return err
+		}
 		query += fmt.Sprintf("embedding = $%d, ", argCount)
-		args = append(args, pgvector.NewVector(getEmbedding(searchText)))
+		args = append(args, pgvector.NewVector(embedding))
 		argCount++
 		updatesMade = true
 	}

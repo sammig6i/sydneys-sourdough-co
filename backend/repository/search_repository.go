@@ -18,8 +18,12 @@ func NewSearchRepository(db database.Database) domain.SearchRepository {
 }
 
 func (s *searchRepository) Search(ctx context.Context, query string) ([]*domain.SearchResult, error) {
-	queryEmbedding := pgvector.NewVector(getEmbedding(query))
+	embedding, err := getEmbedding(query)
+	if err != nil {
+		return nil, err
+	}
 
+	queryEmbedding := pgvector.NewVector(embedding)
 	rows, err := s.db.Query(ctx, `
 		SELECT 
 			entity_type,

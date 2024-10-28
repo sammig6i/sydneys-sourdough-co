@@ -8,7 +8,10 @@ services:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     env_file: .env
     depends_on:
-      - database
+      database:
+        condition: service_started
+      embedding-service:
+        condition: service_healthy
 
   database:
     build:
@@ -43,6 +46,18 @@ services:
     env_file: .env
     depends_on:
       - backend
+
+  embedding-service:
+    build:
+      context: ./embedding-service
+      dockerfile: Dockerfile
+    ports:
+      - "${EMBEDDING_SERVICE_PORT}:8000"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   pgdata:
