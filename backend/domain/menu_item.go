@@ -19,24 +19,23 @@ type MenuItem struct {
 }
 
 type MenuItemRepository interface {
-	Create(c context.Context, menuItem *MenuItem) error
-	Fetch(c context.Context) ([]*MenuItem, error)
-	Update(c context.Context, menuItem *MenuItem) error
-	Delete(c context.Context, id int) error
-	GetByID(c context.Context, id int) (*MenuItem, error)
-	GetByCategory(c context.Context, categoryID int) ([]*MenuItem, error)
-	GetByPriceRange(c context.Context, minPrice, maxPrice float64) ([]*MenuItem, error)
+	Create(ctx context.Context, menuItem *MenuItem) error
+	Fetch(ctx context.Context) ([]*MenuItem, error)
+	Update(ctx context.Context, menuItem *MenuItem) error
+	Delete(ctx context.Context, id int) error
+	GetByID(ctx context.Context, id int) (*MenuItem, error)
+	GetByCategory(ctx context.Context, categoryID int) ([]*MenuItem, error)
+	GetByPriceRange(ctx context.Context, minPrice, maxPrice float64) ([]*MenuItem, error)
 }
 
 type MenuItemUsecase interface {
-	Create(c context.Context, menuItem *MenuItem) error
-	Fetch(c context.Context) ([]*MenuItem, error)
-	Update(c context.Context, menuItem *MenuItem) error
-	Delete(c context.Context, id int) error
-	GetByID(c context.Context, id int) (*MenuItem, error)
-	GetByCategory(c context.Context, categoryID int) ([]*MenuItem, error)
-	GetByName(c context.Context, name string) (*MenuItem, error)
-	GetByPriceRange(c context.Context, minPrice, maxPrice float64) ([]*MenuItem, error)
+	Create(ctx context.Context, menuItem *MenuItem) error
+	Fetch(ctx context.Context) ([]*MenuItem, error)
+	Update(ctx context.Context, menuItem *MenuItem) error
+	Delete(ctx context.Context, id int) error
+	GetByID(ctx context.Context, id int) (*MenuItem, error)
+	GetByCategory(ctx context.Context, categoryID int) ([]*MenuItem, error)
+	GetByPriceRange(ctx context.Context, minPrice, maxPrice float64) ([]*MenuItem, error)
 }
 
 /*

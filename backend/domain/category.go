@@ -9,19 +9,17 @@ type Category struct {
 }
 
 type CategoryRepository interface {
-	Create(c context.Context, category *Category) error
-	Fetch(c context.Context) ([]*Category, error)
-	Update(c context.Context, category *Category) error
-	Delete(c context.Context, id int) error
-	GetByID(c context.Context, id int) (*Category, error)
-	GetByName(c context.Context, name string) (*Category, error)
+	Create(ctx context.Context, category *Category) error
+	Fetch(ctx context.Context) ([]*Category, error)
+	Update(ctx context.Context, category *Category) error
+	Delete(ctx context.Context, id int) error
+	GetByID(ctx context.Context, id int) (*Category, error)
 }
 
 type CategoryUsecase interface {
-	Create(c context.Context, category *Category) error
-	Fetch(c context.Context) ([]*Category, error)
-	Update(c context.Context, category *Category) error
-	Delete(c context.Context, id int) error
-	GetByID(c context.Context, id int) (*Category, error)
-	GetByName(c context.Context, name string) (*Category, error)
+	Create(ctx context.Context, category *Category) error
+	Fetch(ctx context.Context) ([]*Category, error)
+	Update(ctx context.Context, category *Category) error
+	Delete(ctx context.Context, id int) error
+	GetByID(ctx context.Context, id int) (*Category, error)
 }

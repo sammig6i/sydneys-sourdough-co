@@ -20,19 +20,20 @@ func NewMenuItemRepository(db database.Database) domain.MenuItemRepository {
 	return &menuItemRepository{db: db}
 }
 
-func (m *menuItemRepository) Create(c context.Context, menuItem *domain.MenuItem) error {
+func (m *menuItemRepository) Create(ctx context.Context, menuItem *domain.MenuItem) error {
 	searchText := menuItem.Name
 	if menuItem.Description != "" {
 		searchText += " " + menuItem.Description
 	}
 
-	_, err := m.db.Exec(c, `
+	_, err := m.db.Exec(ctx, `
 		INSERT INTO menu_items (
 			name, description, price, category_id, 
 			image_url, embedding, created_at, updated_at
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, NOW(), NOW()
 		)
+		RETURNING id
 	`, menuItem.Name, menuItem.Description, menuItem.Price,
 		menuItem.CategoryID, menuItem.ImageURL,
 		pgvector.NewVector(getEmbedding(searchText)))
@@ -44,8 +45,8 @@ func (m *menuItemRepository) Create(c context.Context, menuItem *domain.MenuItem
 	return nil
 }
 
-func (m *menuItemRepository) Fetch(c context.Context) ([]*domain.MenuItem, error) {
-	rows, err := m.db.Query(c, `
+func (m *menuItemRepository) Fetch(ctx context.Context) ([]*domain.MenuItem, error) {
+	rows, err := m.db.Query(ctx, `
 		SELECT id, name, description, price, category_id, image_url, created_at, updated_at
 		FROM menu_items
 	`)
@@ -73,7 +74,7 @@ func (m *menuItemRepository) Fetch(c context.Context) ([]*domain.MenuItem, error
 	return menuItems, nil
 }
 
-func (m *menuItemRepository) Update(c context.Context, menuItem *domain.MenuItem) error {
+func (m *menuItemRepository) Update(ctx context.Context, menuItem *domain.MenuItem) error {
 	query := "UPDATE menu_items SET "
 	var args []interface{}
 	argCount := 1
@@ -95,7 +96,7 @@ func (m *menuItemRepository) Update(c context.Context, menuItem *domain.MenuItem
 	}
 
 	if needsEmbeddingUpdate {
-		currentItem, err := m.GetByID(c, menuItem.ID)
+		currentItem, err := m.GetByID(ctx, menuItem.ID)
 		if err != nil {
 			return fmt.Errorf("error getting current menu item: %w", err)
 		}
@@ -148,7 +149,7 @@ func (m *menuItemRepository) Update(c context.Context, menuItem *domain.MenuItem
 	query += fmt.Sprintf("WHERE id = $%d", argCount)
 	args = append(args, menuItem.ID)
 
-	_, err := m.db.Exec(c, query, args...)
+	_, err := m.db.Exec(ctx, query, args...)
 	if err != nil {
 		return fmt.Errorf("error updating menu item: %w", err)
 	}
@@ -156,8 +157,8 @@ func (m *menuItemRepository) Update(c context.Context, menuItem *domain.MenuItem
 	return nil
 }
 
-func (m *menuItemRepository) Delete(c context.Context, id int) error {
-	result, err := m.db.Exec(c, `
+func (m *menuItemRepository) Delete(ctx context.Context, id int) error {
+	result, err := m.db.Exec(ctx, `
 		DELETE FROM menu_items
 		WHERE id = $1
 	`, id)
@@ -173,8 +174,8 @@ func (m *menuItemRepository) Delete(c context.Context, id int) error {
 	return nil
 }
 
-func (m *menuItemRepository) GetByID(c context.Context, id int) (*domain.MenuItem, error) {
-	row := m.db.QueryRow(c, `
+func (m *menuItemRepository) GetByID(ctx context.Context, id int) (*domain.MenuItem, error) {
+	row := m.db.QueryRow(ctx, `
 		SELECT id, name, description, price, category_id, image_url, created_at, updated_at
 		FROM menu_items
 		WHERE id = $1
@@ -194,8 +195,8 @@ func (m *menuItemRepository) GetByID(c context.Context, id int) (*domain.MenuIte
 	return &mi, nil
 }
 
-func (m *menuItemRepository) GetByCategory(c context.Context, categoryID int) ([]*domain.MenuItem, error) {
-	rows, err := m.db.Query(c, `
+func (m *menuItemRepository) GetByCategory(ctx context.Context, categoryID int) ([]*domain.MenuItem, error) {
+	rows, err := m.db.Query(ctx, `
 		SELECT id, name, description, price, category_id, image_url, created_at, updated_at
 		FROM menu_items
 		WHERE category_id = $1
@@ -227,8 +228,8 @@ func (m *menuItemRepository) GetByCategory(c context.Context, categoryID int) ([
 
 }
 
-func (m *menuItemRepository) GetByPriceRange(c context.Context, minPrice, maxPrice float64) ([]*domain.MenuItem, error) {
-	rows, err := m.db.Query(c, `
+func (m *menuItemRepository) GetByPriceRange(ctx context.Context, minPrice, maxPrice float64) ([]*domain.MenuItem, error) {
+	rows, err := m.db.Query(ctx, `
 		SELECT id, name, description, price, category_id, image_url, created_at, updated_at
 		FROM menu_items
 		WHERE price >= $1 AND price <= $2
@@ -253,41 +254,6 @@ func (m *menuItemRepository) GetByPriceRange(c context.Context, minPrice, maxPri
 
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("error iterating menu items by price range: %w", err)
-	}
-
-	return menuItems, nil
-}
-
-func (m *menuItemRepository) Search(c context.Context, query string) ([]*domain.MenuItem, error) {
-	rows, err := m.db.Query(c, `
-		SELECT 
-			id, name, description, price, category_id, 
-			image_url, created_at, updated_at
-		FROM menu_items
-		WHERE embedding IS NOT NULL
-		ORDER BY embedding <=> $1
-	`, pgvector.NewVector(getEmbedding(query)))
-
-	if err != nil {
-		return nil, fmt.Errorf("error searching menu items: %w", err)
-	}
-	defer rows.Close()
-
-	var menuItems []*domain.MenuItem
-	for rows.Next() {
-		var mi domain.MenuItem
-		err := rows.Scan(
-			&mi.ID, &mi.Name, &mi.Description, &mi.Price,
-			&mi.CategoryID, &mi.ImageURL, &mi.CreatedAt, &mi.UpdatedAt,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("error scanning menu item: %w", err)
-		}
-		menuItems = append(menuItems, &mi)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating menu items: %w", err)
 	}
 
 	return menuItems, nil
