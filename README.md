@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="assets/sydneys-logo.svg" alt="Logo" width="300" >
+    <img src="assets/sydneys-logo-bg.svg" alt="Logo" width="300" >
   </a>
 
   <h3 align="center">Sydeny's Sourdough Co.</h3>
@@ -165,13 +165,10 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-  - [ ] Chinese
-  - [ ] Spanish
+<!-- - [x] Add Changelog -->
+<!-- - [x] Add back to top links -->
+<!-- - [x] Add Additional Templates w/ Examples -->
+<!-- - [x] Add "components" document to easily copy & paste sections of the readme -->
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 
