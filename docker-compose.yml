@@ -5,27 +5,14 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
-    env_file: .env
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    volumes:
+      - ./.env:/app/.env
     depends_on:
-      database:
-        condition: service_started
       embedding-service:
         condition: service_healthy
-
-  database:
-    build:
-      context: ./backend/database
-      dockerfile: Dockerfile
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
-    env_file: .env
-    environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
   frontend:
     build:
@@ -34,6 +21,8 @@ services:
     ports:
       - "${FRONTEND_PORT}:3000"
     env_file: .env
+    volumes:
+      - ./.env:/app/.env
     depends_on:
       - backend
 
@@ -44,6 +33,8 @@ services:
     ports:
       - "${ADMIN_PORT}:3000"
     env_file: .env
+    volumes:
+      - ./.env:/app/.env
     depends_on:
       - backend
 
@@ -54,6 +45,8 @@ services:
     ports:
       - "8000:8000"
     env_file: .env
+    volumes:
+      - ./.env:/app/.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
       interval: 30s

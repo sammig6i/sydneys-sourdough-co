@@ -6,10 +6,11 @@ COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
 COPY backend/ .
-COPY .env .
+
+RUN mkdir -p /app/supabase/migrations
 
 RUN go build -o main ./cmd/main.go
 
-EXPOSE ${BACKEND_PORT}
+EXPOSE 8080
 
 CMD ["./main"]

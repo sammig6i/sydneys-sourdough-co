@@ -15,27 +15,28 @@ type Env struct {
 	DBName              string `mapstructure:"DB_NAME"`
 	DatabaseURL         string `mapstructure:"DB_URL"`
 	EmbeddingServiceURL string `mapstructure:"EMBEDDING_SERVICE_URL"`
+	BackendPort         string `mapstructure:"BACKEND_PORT"`
 }
 
 func NewEnv() *Env {
 	env := Env{}
 
+	viper.SetDefault("CONTEXT_TIMEOUT", 30)
+	viper.SetDefault("BACKEND_PORT", ":8080")
+	viper.SetDefault("DB_NAME", "postgres")
+
 	viper.AutomaticEnv()
-
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
-
-	viper.AddConfigPath("/app")
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("..")
-	viper.AddConfigPath("../..")
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Printf("Warning: Error reading config file: %v", err)
 	}
 
 	if err := viper.Unmarshal(&env); err != nil {
-		log.Fatalf("Unable to decode into struct: %v", err)
+		log.Printf("Warning: Error unmarshaling config: %v", err)
+	}
+
+	if env.BackendPort != "" {
+		env.BackendPort = ":" + env.BackendPort
 	}
 
 	return &env
