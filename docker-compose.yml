@@ -1,5 +1,5 @@
 services:
-
+  # TODO fix .env volume not mounting onto docker container
   backend:
     build:
       context: .
