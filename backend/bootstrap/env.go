@@ -21,11 +21,7 @@ type Env struct {
 func NewEnv() *Env {
 	env := Env{}
 
-	viper.SetDefault("CONTEXT_TIMEOUT", 30)
-	viper.SetDefault("BACKEND_PORT", ":8080")
-	viper.SetDefault("DB_NAME", "postgres")
-
-	viper.AutomaticEnv()
+	viper.SetConfigFile("/app/.env")
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Printf("Warning: Error reading config file: %v", err)
@@ -35,9 +31,6 @@ func NewEnv() *Env {
 		log.Printf("Warning: Error unmarshaling config: %v", err)
 	}
 
-	if env.BackendPort != "" {
-		env.BackendPort = ":" + env.BackendPort
-	}
 
 	return &env
 }

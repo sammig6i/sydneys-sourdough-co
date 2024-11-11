@@ -6,8 +6,7 @@ COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
 COPY backend/ .
-
-RUN mkdir -p /app/supabase/migrations
+COPY supabase/migrations /app/supabase/migrations
 
 RUN go build -o main ./cmd/main.go
 

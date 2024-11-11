@@ -1,13 +1,11 @@
 services:
-  # TODO fix .env volume not mounting onto docker container
+  # TODO use secrets for confidential variables in .env file
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
     ports:
       - "${PORT}:${PORT}"
-    env_file:
-      - .env
     volumes:
       - ./.env:/app/.env
     depends_on:
@@ -20,7 +18,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${FRONTEND_PORT}:3000"
-    env_file: .env
+    environment:
+      - PORT=3000
     volumes:
       - ./.env:/app/.env
     depends_on:
@@ -32,7 +31,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${ADMIN_PORT}:3000"
-    env_file: .env
+    environment:
+      - PORT=3000
     volumes:
       - ./.env:/app/.env
     depends_on:
@@ -44,7 +44,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    env_file: .env
     volumes:
       - ./.env:/app/.env
     healthcheck:

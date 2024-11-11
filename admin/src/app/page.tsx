@@ -2,24 +2,7 @@ import Image from "next/image";
 
 // TODO use vercel dashboard template
 /* 
-Frontend (Auth.js):
-        - next-auth package
-        - Google OAuth provider configuration
-        Backend (Go):
-        - github.com/gin-gonic/gin - Web framework
-        - github.com/golang-jwt/jwt - JWT handling
-        - github.com/gin-contrib/cors - CORS middleware
-    3. Security Flow
-        - User clicks "Sign in with Google"
-        - Auth.js handles OAuth flow with Google
-
-    Upon successful auth, Auth.js:
-    - Creates a session
-    - Generates a JWT
-    - Stores tokens securely
-
-    4. Frontend includes JWT in API calls to Go backend
-    Go backend validates JWT using middleware
+Auth - Use Supabase
 */
 
 export default function Home() {
