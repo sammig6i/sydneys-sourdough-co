@@ -31,6 +31,5 @@ func NewEnv() *Env {
 		log.Printf("Warning: Error unmarshaling config: %v", err)
 	}
 
-
 	return &env
 }

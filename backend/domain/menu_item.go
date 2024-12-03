@@ -38,11 +38,4 @@ type MenuItemUsecase interface {
 	GetByPriceRange(ctx context.Context, minPrice, maxPrice float64) ([]*MenuItem, error)
 }
 
-/*
-Domain:
-+----------------------------------------------------------+
-|                                                          |
-| Controller --> Usecase --> Repository --> DB             |
-|                                                          |
-+----------------------------------------------------------+
-*/
+
