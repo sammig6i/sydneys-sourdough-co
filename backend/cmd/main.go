@@ -29,6 +29,7 @@ func main() {
 	gin.Run(port)
 
 	// TODO Test menu routes for CRUD and others
+	// TODO configure to skip migrations when on local supabase
 }
 
 /*

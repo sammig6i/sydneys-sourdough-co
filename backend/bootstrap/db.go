@@ -13,7 +13,7 @@ func NewPostgresDB(env *Env) database.Database {
 	defer cancel()
 
 	connString := env.DatabaseURL
-
+	log.Printf("Environment: %s", env.Environment)
 	log.Printf("Database URL: %s", connString)
 
 	migrationPath := "/app/supabase/migrations"
@@ -24,10 +24,6 @@ func NewPostgresDB(env *Env) database.Database {
 	conn, err := database.NewPostgresDatabase(ctx, connString)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
-	}
-
-	if err := conn.Ping(ctx); err != nil {
-		log.Fatalf("Failed to ping database: %v", err)
 	}
 
 	return conn

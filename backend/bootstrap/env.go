@@ -16,6 +16,7 @@ type Env struct {
 	DatabaseURL         string `mapstructure:"DB_URL"`
 	EmbeddingServiceURL string `mapstructure:"EMBEDDING_SERVICE_URL"`
 	BackendPort         string `mapstructure:"BACKEND_PORT"`
+	Environment         string `mapstructure:"ENVIRONMENT"`
 }
 
 func NewEnv() *Env {
@@ -25,6 +26,10 @@ func NewEnv() *Env {
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Printf("Warning: Error reading config file: %v", err)
+		viper.SetConfigFile("/app/.env.local")
+		if err := viper.ReadInConfig(); err != nil {
+			log.Printf("Warning: Error reading local config file: %v", err)
+		}
 	}
 
 	if err := viper.Unmarshal(&env); err != nil {
