@@ -25,6 +25,7 @@ services:
     depends_on:
       - backend
 
+
   admin:
     build:
       context: ./admin
