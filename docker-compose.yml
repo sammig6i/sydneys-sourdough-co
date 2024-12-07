@@ -8,6 +8,9 @@ services:
       - "${PORT}:${PORT}"
     volumes:
       - ./.env:/app/.env
+      - ./.env.local:/app/.env.local
+    environment:
+      - GO_ENV=${GO_ENV:-production}
     depends_on:
       embedding-service:
         condition: service_healthy
@@ -24,7 +27,6 @@ services:
       - ./.env:/app/.env
     depends_on:
       - backend
-
 
   admin:
     build:

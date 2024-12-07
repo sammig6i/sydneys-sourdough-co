@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -76,5 +77,28 @@ func RunDownMigrations(connString string, migrationPath string) error {
 	}
 
 	log.Println("Down migrations completed successfully")
+	return nil
+}
+
+func RunSeeds(connString string, seedPath string) error {
+	log.Printf("Running seeds from path: %s", seedPath)
+
+	db, err := sql.Open("pgx", connString)
+	if err != nil {
+		return fmt.Errorf("failed to open database: %w", err)
+	}
+	defer db.Close()
+
+	seedContent, err := os.ReadFile(seedPath)
+	if err != nil {
+		return fmt.Errorf("failed to read seed file: %w", err)
+	}
+
+	_, err = db.Exec(string(seedContent))
+	if err != nil {
+		return fmt.Errorf("failed to execute seed: %w", err)
+	}
+
+	log.Println("Seeds completed successfully")
 	return nil
 }
