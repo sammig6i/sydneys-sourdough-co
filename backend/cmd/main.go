@@ -27,7 +27,6 @@ func main() {
 	port := env.BackendPort
 	log.Printf("Listening on port %s", port)
 	gin.Run(port)
-
 	// TODO Test seed.sql for local supabase & Test menu routes for CRUD and others
 
 }
