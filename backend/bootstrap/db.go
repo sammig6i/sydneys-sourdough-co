@@ -16,18 +16,6 @@ func NewPostgresDB(env *Env) database.Database {
 	log.Printf("Environment: %s", env.Environment)
 	log.Printf("Database URL: %s", connString)
 
-	migrationPath := "/app/supabase/migrations"
-	if err := database.RunMigrations(connString, migrationPath); err != nil {
-		log.Printf("Warning: Migration error: %v", err)
-	}
-
-	if env.Environment == "development" {
-		seedPath := "/app/supabase/seed.sql"
-		if err := database.RunSeeds(connString, seedPath); err != nil {
-			log.Printf("Warning: Seed error: %v", err)
-		}
-	}
-
 	conn, err := database.NewPostgresDatabase(ctx, connString)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
