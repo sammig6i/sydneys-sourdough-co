@@ -91,7 +91,6 @@ function DesktopNav() {
         </NavItem>
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-      // TODO Fix Errors with Tooltip component
         <Tooltip>
           <TooltipTrigger asChild>
             <Link

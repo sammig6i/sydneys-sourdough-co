@@ -1,5 +1,5 @@
 'use client';
-
+// TODO add categories
 import {
   TableHead,
   TableRow,

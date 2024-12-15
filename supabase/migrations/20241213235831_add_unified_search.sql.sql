@@ -1,4 +1,5 @@
-CREATE VIEW unified_search AS
+CREATE VIEW unified_search
+WITH (security_invoker=on) AS
 SELECT 
     'menu_item' as entity_type,
     id,
