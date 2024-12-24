@@ -15,7 +15,7 @@ func Setup(env *bootstrap.Env, timeout time.Duration, db database.Database, gin 
 	// 2 Login
 
 	protectedRouter := gin.Group("/protected")
-	// TODO Add custom middleware for protected routes
+	// TODO Add middleware for protected routes
 	NewCategoryRouter(env, timeout, db, protectedRouter)
 	NewMenuRouter(env, timeout, db, protectedRouter)
 	NewSearchRouter(env, timeout, db, protectedRouter)
