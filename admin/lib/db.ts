@@ -1,5 +1,5 @@
 import 'server-only';
-// TODO replace with Supabase DB instead
+// TODO replace with Supabase DB operations instead
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import {
