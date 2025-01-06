@@ -10,9 +10,10 @@ import (
 
 func Setup(env *bootstrap.Env, timeout time.Duration, db database.Database, gin *gin.Engine) {
 	// publicRouter := gin.Group("")
-	// TODO Add Supabase Auth:
+	// TODO add Google prebuilt config for sign-up and login https://supabase.com/docs/guides/auth/social-login/auth-google?queryGroups=platform&platform=web&queryGroups=environment&environment=client#saving-google-tokens
 	// 1. Sign up
 	// 2 Login
+
 
 	protectedRouter := gin.Group("/protected")
 	// TODO Add middleware for protected routes
