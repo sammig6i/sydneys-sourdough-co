@@ -28,7 +28,8 @@ func NewEnv() *Env {
 		environment = "production"
 	}
 
-	viper.SetConfigFile("/app/.env")
+	// viper.SetConfigFile("app/.env")
+	viper.SetConfigFile("../.env.local")
 
 	if environment == "development" {
 		viper.SetConfigFile("/app/.env.local")

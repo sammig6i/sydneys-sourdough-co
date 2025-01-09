@@ -3,7 +3,7 @@ import { createClient } from './client';
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { revalidatePath } from 'next/cache';
-
+// TODO update Supabase Auth to allow certain users
 interface CredentialResponse {
   credential: string;
   select_by: string;

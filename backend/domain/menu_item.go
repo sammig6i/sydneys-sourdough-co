@@ -20,7 +20,7 @@ type MenuItem struct {
 
 type MenuItemRepository interface {
 	Create(ctx context.Context, menuItem *MenuItem) error
-	Fetch(ctx context.Context) ([]*MenuItem, error)
+	Fetch(ctx context.Context, offset int, limit int) ([]*MenuItem, int, int, error)
 	Update(ctx context.Context, menuItem *MenuItem) error
 	Delete(ctx context.Context, id int) error
 	GetByID(ctx context.Context, id int) (*MenuItem, error)
@@ -30,7 +30,7 @@ type MenuItemRepository interface {
 
 type MenuItemUsecase interface {
 	Create(ctx context.Context, menuItem *MenuItem) error
-	Fetch(ctx context.Context) ([]*MenuItem, error)
+	Fetch(ctx context.Context, offset int, limit int) ([]*MenuItem, int, int, error)
 	Update(ctx context.Context, menuItem *MenuItem) error
 	Delete(ctx context.Context, id int) error
 	GetByID(ctx context.Context, id int) (*MenuItem, error)

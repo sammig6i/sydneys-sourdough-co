@@ -25,10 +25,10 @@ func (mu *menuItemUsecase) Create(ctx context.Context, menuItem *domain.MenuItem
 	return mu.menuItemRepo.Create(ctx, menuItem)
 }
 
-func (mu *menuItemUsecase) Fetch(ctx context.Context) ([]*domain.MenuItem, error) {
+func (mu *menuItemUsecase) Fetch(ctx context.Context, offset int, limit int) ([]*domain.MenuItem, int, int, error) {
 	ctx, cancel := context.WithTimeout(ctx, mu.contextTimeout)
 	defer cancel()
-	return mu.menuItemRepo.Fetch(ctx)
+	return mu.menuItemRepo.Fetch(ctx, offset, limit)
 }
 
 func (mu *menuItemUsecase) Update(ctx context.Context, menuItem *domain.MenuItem) error {

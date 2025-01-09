@@ -50,13 +50,22 @@ func (m *menuItemRepository) Create(ctx context.Context, menuItem *domain.MenuIt
 	return nil
 }
 
-func (m *menuItemRepository) Fetch(ctx context.Context) ([]*domain.MenuItem, error) {
+func (m *menuItemRepository) Fetch(ctx context.Context, offset int, limit int) ([]*domain.MenuItem, int, int, error) {
+	var totalItems int
+	err := m.db.QueryRow(ctx, `
+		SELECT COUNT(*) FROM menu_items
+	`).Scan(&totalItems)
+	if err != nil {
+		return nil, 0, 0, fmt.Errorf("error fetching total count: %w", err)
+	}
+
 	rows, err := m.db.Query(ctx, `
 		SELECT id, name, description, price, category_id, image_url, created_at, updated_at
 		FROM menu_items
-	`)
+		LIMIT $1 OFFSET $2
+	`, limit, offset)
 	if err != nil {
-		return nil, fmt.Errorf("error fetching menu items: %w", err)
+		return nil, 0, 0, fmt.Errorf("error fetching menu items: %w", err)
 	}
 	defer rows.Close()
 
@@ -67,16 +76,21 @@ func (m *menuItemRepository) Fetch(ctx context.Context) ([]*domain.MenuItem, err
 			&mi.ID, &mi.Name, &mi.Description, &mi.Price, &mi.CategoryID, &mi.ImageURL, &mi.CreatedAt, &mi.UpdatedAt,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("error scanning menu item: %w", err)
+			return nil, 0, 0, fmt.Errorf("error scanning menu item: %w", err)
 		}
 		menuItems = append(menuItems, &mi)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating menu items: %w", err)
+		return nil, 0, 0, fmt.Errorf("error iterating menu items: %w", err)
 	}
 
-	return menuItems, nil
+	newOffset := offset + len(menuItems)
+	if len(menuItems) < limit {
+		newOffset = 0
+	}
+
+	return menuItems, totalItems, newOffset, nil
 }
 
 func (m *menuItemRepository) Update(ctx context.Context, menuItem *domain.MenuItem) error {

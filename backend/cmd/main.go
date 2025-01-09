@@ -24,7 +24,8 @@ func main() {
 
 	route.Setup(env, timeout, db, gin)
 
-	port := env.BackendPort
+	// port := env.BackendPort
+	port := ":3001"
 	log.Printf("Listening on port %s", port)
 	gin.Run(port)
 	// TODO Add tests for backend - DB and routes

@@ -29,13 +29,19 @@ func (mc *MenuController) Create(c *gin.Context) {
 }
 
 func (mc *MenuController) Fetch(c *gin.Context) {
-	menuItems, err := mc.MenuItemUsecase.Fetch(c.Request.Context())
+	var offset int
+	var limit int
+	menuItems, totalItems, newOffset, err := mc.MenuItemUsecase.Fetch(c.Request.Context(), offset, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, menuItems)
+	c.JSON(http.StatusOK, gin.H{
+		"menuItems": menuItems,
+		"totalItems": totalItems,
+		"newOffset": newOffset,
+	})
 }
 
 func (mc *MenuController) Update(c *gin.Context) {
